@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Getting There</string>
+    <string name="start_button_nav">Go Somewhere</string>
+    <string name="start_button_maps">See the Maps</string>
+    <string name="start_button_help">Get Help</string>
+    <string name="start_text_title">Getting There</string>
+</resources>
