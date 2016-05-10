@@ -4,4 +4,7 @@
     <string name="start_button_maps">See the Maps</string>
     <string name="start_button_help">Get Help</string>
     <string name="start_text_title">Getting There</string>
+    <string name="start_skyline_desc">NYC skyline for background</string>
+    <string name="help_button_back">Go Back</string>
+    <string name="station_name">Station Name</string>
 </resources>

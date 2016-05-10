@@ -7,28 +7,60 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="cuny.gc.multimodality.gettingthere.StartScreen">
+    tools:context=".HomeScreen">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/skylineImageView"
+        android:foreground="@mipmap/nyc_skyline"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:layout_above="@+id/start_button_nav"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@string/start_skyline_desc"
+        android:padding="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/blackBoxImageView"
+        android:layout_below="@+id/skylineImageView"
+        android:layout_centerHorizontal="true"
+        android:foreground="@mipmap/black_square" />
 
     <Button
+        style="@style/GeneralText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/start_button_nav"
         android:id="@+id/start_button_nav"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_marginTop="0dp" />
 
     <Button
+        style="@style/GeneralText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/start_button_maps"
         android:id="@+id/start_button_maps"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:layout_below="@+id/start_button_nav"
         android:layout_centerHorizontal="true"
-        android:gravity="center" />
+        android:gravity="center"
+        android:onClick="onClick"
+        />
 
     <Button
+        style="@style/GeneralText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/start_button_help"
@@ -36,9 +68,12 @@
         android:gravity="center"
         android:layout_below="@+id/start_button_maps"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="50dp"
+        android:onClick="onClick"
+        />
 
     <TextView
+        style="@style/WhiteText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -49,5 +84,8 @@
         android:layout_alignParentEnd="true"
         android:gravity="center_horizontal"
         android:textSize="50dp"
-        android:layout_marginTop="50dp" />
+        android:layout_marginTop="50dp"
+        android:onClick="onClick"
+        />
+
 </RelativeLayout>
