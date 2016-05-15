@@ -8,10 +8,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 
 public class MapsMenu extends Activity {
+
+    private static final String TAG = "MapsMenu.java";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,19 +36,24 @@ public class MapsMenu extends Activity {
 
         // this allows you to give instructions if a list item is clicked
         mapsListView.setOnItemClickListener(
+
                 new AdapterView.OnItemClickListener() {
+
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                         // whenever you tap an item in a list, it's position, id, etc. get
                         // passed along and saved in a var
+
                         String list_info = String.valueOf(parent.getItemIdAtPosition(position));
-                        Toast.makeText(MapsMenu.this, list_info, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MapsMenu.this, list_info, Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(view.getContext(), StationMapDisplay.class);
                         intent.putExtra("position_id", list_info);
+
+                        startActivity(intent);
                     }
                 }
         );
     }
 }
-

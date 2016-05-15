@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/dnr_25_st" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imbtn_25_st_mh_ext"
+        android:src="@drawable/s_button_sq"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="271dp"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_alignEnd="@+id/imageView"
+        android:onClick="onClick" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imbtn_25_st_br_ext"
+        android:src="@drawable/s_button_sq"
+        android:layout_marginStart="27dp"
+        android:layout_alignTop="@+id/imbtn_25_st_mh_ext"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_alignBottom="@+id/imbtn_25_st_mh_ext"
+        android:onClick="onClick" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imbtn_25_st_bk_plat"
+        android:src="@drawable/s_button_sq"
+        android:layout_below="@+id/imbtn_25_st_br_ext"
+        android:layout_toEndOf="@+id/imbtn_25_st_br_ext"
+        android:layout_marginStart="61dp"
+        android:onClick="onClick" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imbtn_25_st_mh_plat"
+        android:src="@drawable/s_button_sq"
+        android:layout_marginRight="91dp"
+        android:layout_below="@+id/imbtn_25_st_mh_ext"
+        android:layout_toEndOf="@+id/imbtn_25_st_bk_plat"
+        android:layout_marginStart="44dp"
+        android:onClick="onClick" />
+
+</RelativeLayout>

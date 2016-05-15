@@ -7,4 +7,9 @@
     <string name="start_skyline_desc">NYC skyline for background</string>
     <string name="help_button_back">Go Back</string>
     <string name="station_name">Station Name</string>
+    <string name="ocr_text_output">OCR Text Output</string>
+    <string name="take_photo_button">Take Photo</string>
+    <string name="accept_output_button">Accept Output</string>
+    <string name="reject_output_button">Reject Output</string>
+    <string name="go_back_button">Go Back</string>
 </resources>

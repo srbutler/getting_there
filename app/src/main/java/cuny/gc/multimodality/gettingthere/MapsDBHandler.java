@@ -1,12 +1,10 @@
 package cuny.gc.multimodality.gettingthere;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.Cursor;
-import android.content.Context;
-import android.content.ContentValues;
-
-import cuny.gc.multimodality.gettingthere.StationMap;
 
 public class MapsDBHandler extends SQLiteOpenHelper {
 
@@ -45,7 +43,7 @@ public class MapsDBHandler extends SQLiteOpenHelper {
     }
 
     //Add a new row to the database
-    public void addStation(StationMap stationmap){
+    public void addStation(StationMap stationmap) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_LINES, stationmap.getLines());
         values.put(COLUMN_LINES_DAY, stationmap.getDay_lines());

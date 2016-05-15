@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/dfgnr_4_av_9_st" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imbtn_4_av_9_st_br_ext_s"
+        android:src="@drawable/s_button_sq"
+        android:layout_marginStart="65dp"
+        android:layout_alignTop="@+id/imbtn_4_av_9_st_mh_ext_s"
+        android:layout_alignStart="@+id/imageView"
+        android:onClick="onClick" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imbtn_4_av_9_st_mh_ext_n"
+        android:src="@drawable/s_button_sq"
+        android:layout_marginBottom="77dp"
+        android:layout_alignBottom="@+id/imbtn_4_av_9_st_br_plat"
+        android:layout_alignStart="@+id/imbtn_4_av_9_st_mh_ext_s"
+        android:onClick="onClick" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imbtn_4_av_9_st_br_plat"
+        android:src="@drawable/s_button_sq"
+        android:layout_marginTop="227dp"
+        android:layout_marginStart="31dp"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_toEndOf="@+id/imbtn_4_av_9_st_br_ext_s"
+        android:onClick="onClick" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imbtn_4_av_9_st_mh_ext_s"
+        android:src="@drawable/s_button_sq"
+        android:layout_marginEnd="59dp"
+        android:layout_centerVertical="true"
+        android:layout_alignEnd="@+id/imageView"
+        android:onClick="onClick" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imbtn_4_av_9_st_mh_plat"
+        android:src="@drawable/s_button_sq"
+        android:layout_alignTop="@+id/imbtn_4_av_9_st_br_plat"
+        android:layout_toEndOf="@+id/imbtn_4_av_9_st_br_plat"
+        android:layout_marginStart="29dp"
+        android:onClick="onClick" />
+
+</RelativeLayout>

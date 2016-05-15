@@ -29,7 +29,6 @@ public class StationMapCursorAdapter extends CursorAdapter {
 
         // Find fields to populate in inflated template
         TextView stationNameTV = (TextView) view.findViewById(R.id.stationName);
-        TextView stationLinesTV = (TextView) view.findViewById(R.id.stationLines);
 
         // Extract properties from cursor
         String station_name = cursor.getString(cursor.getColumnIndexOrThrow("station_display_name"));
@@ -37,6 +36,5 @@ public class StationMapCursorAdapter extends CursorAdapter {
 
         // Populate fields with extracted properties
         stationNameTV.setText(station_name);
-        stationLinesTV.setText(lines);
     }
 }
