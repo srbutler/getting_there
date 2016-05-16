@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="cuny.gc.multimodality.gettingthere.TextEntryCheck">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/skylineImageViewTextCheck"
+        android:foreground="@mipmap/nyc_skyline"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="false"
+        android:contentDescription="@string/start_skyline_desc"
+        android:padding="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/text_entry_title"
+        android:id="@+id/textEntryCheckTitle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="30sp"
+        android:background="@android:drawable/screen_background_dark_transparent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/text_entry_instructions"
+        android:id="@+id/textEntryInstructions"
+        android:layout_below="@+id/textEntryCheckTitle"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/example_title"
+        android:id="@+id/exampleTitleTV"
+        android:layout_below="@+id/textEntryInstructions"
+        android:layout_alignStart="@+id/textEntryCheckTitle"
+        android:textSize="25sp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:id="@+id/subwayExampleSign"
+        android:layout_below="@+id/exampleTitleTV"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/entrance_sign_exe"
+        android:layout_margin="5dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/example_followup"
+        android:id="@+id/exampleHeaderTV"
+        android:textSize="25sp"
+        android:layout_below="@+id/subwayExampleSign"
+        android:layout_alignStart="@+id/exampleTitleTV" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="150dp"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/textEntryForChecking"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/clearButton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/clear_text"
+        android:id="@+id/clearButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:onClick="clearText" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/check_text"
+        android:id="@+id/acceptButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="onClick" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/sign_text"
+        android:id="@+id/exampleSignText"
+        android:layout_below="@+id/exampleHeaderTV"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        android:layout_margin="5dp"
+        android:background="@android:drawable/screen_background_dark_transparent" />
+
+</RelativeLayout>

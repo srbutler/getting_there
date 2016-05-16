@@ -12,4 +12,14 @@
     <string name="accept_output_button">Accept Output</string>
     <string name="reject_output_button">Reject Output</string>
     <string name="go_back_button">Go Back</string>
+
+    <string name="text_entry_title">Verify Location: Text Entry</string>
+    <string name="text_entry_instructions">Enter text from a sign near you to check
+        whether you are in the right part of the station. Try to avoid mistakes when typing, and
+        spell everything exactly as it is written on the sign!</string>
+    <string name="example_title">If You See:</string>
+    <string name="example_followup">Then Type In:</string>
+    <string name="sign_text">Prospect Av Station\nBay Ridge\nR</string>
+    <string name="clear_text">Clear Text</string>
+    <string name="check_text">Check Text</string>
 </resources>
