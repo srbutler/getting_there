@@ -1,24 +1,40 @@
 package cuny.gc.multimodality.gettingthere;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -34,8 +50,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
-public class GetDirections extends ActionBarActivity {
+@RuntimePermissions
+public class GetDirections extends ActionBarActivity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
     private static final String TAG = "GetDirections.java";
     final static int SLEEP_DURATION = 100;      //used in progress bar
@@ -48,21 +70,30 @@ public class GetDirections extends ActionBarActivity {
     String array_append3 = "";
     String num_stops = "";
     String dest = "";
+    double lat = 0;
+    double longs = 0;
     String origin = "";
     String userInput = "";
     String trip_desc = "";
     String town_desc = "";
-    ArrayList<Double> lats = new ArrayList<Double>(); //latitudes of locations
-    ArrayList<Double> longs = new ArrayList<Double>(); //longitudes of locations
+    String currentLoc = "";
     ArrayList<String> direction_array = new ArrayList<String>(); //all directions
     ArrayList<String> names = new ArrayList<String>(); //names parsed from XML
-    ArrayList<String> locs = new ArrayList<String>(); //all locations
-    ArrayList<String> locs_names = new ArrayList<String>(); //location names
+    private SupportMapFragment mapFragment;
+    private GoogleMap map;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    private long UPDATE_INTERVAL = 60000; //1 min
+    private long FASTEST_INTERVAL = 5000; //5 seconds
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
     // Set display
     TextView etTo;
     Button btn;
     TextView tvResult;
+    android.widget.CheckBox checkBox;
+    android.widget.EditText textInputBox;
+    android.widget.EditText manualInputBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +102,26 @@ public class GetDirections extends ActionBarActivity {
         etTo = (TextView) findViewById(R.id.etTo);
         btn = (Button) findViewById(R.id.button);
         tvResult = (TextView) findViewById(R.id.tvResult);
+        textInputBox = (android.widget.EditText) findViewById(R.id.textInput);
+        manualInputBox = (android.widget.EditText) findViewById(R.id.findOrigin);
+        checkBox = (android.widget.CheckBox) findViewById(R.id.checkBox);
+
+        //starts copied part
+        mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap map) {
+                    loadMap(map);
+                }
+            });
+        } else {
+            Toast.makeText(this, "Internet Connection Failure - Map was not loadable.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void findPlace(View view) {
+        dest = "";
         try {
             Intent intent =
                     new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
@@ -87,59 +135,75 @@ public class GetDirections extends ActionBarActivity {
     }
 
     public void findOrigin(View view) {
-        try {
-            Intent intent =
-                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
-                            .build(this);
-            startActivityForResult(intent, 1);
-        } catch (GooglePlayServicesRepairableException e) {
-            tvResult.setText("Location finder is not available at this time. Try moving to a location with internet service.");
-        } catch (GooglePlayServicesNotAvailableException e) {
-            tvResult.setText("Location finder is not available at this time. Try moving to a location with internet service.");
+        if (checkBox.isChecked() == true) {
+            origin = "";
+            manualInputBox.setVisibility(View.VISIBLE);
+            try {
+                Intent intent =
+                        new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                                .build(this);
+                startActivityForResult(intent, 1);
+            } catch (GooglePlayServicesRepairableException e) {
+                tvResult.setText("Location finder is not available at this time. Try moving to a location with internet service.");
+            } catch (GooglePlayServicesNotAvailableException e) {
+                tvResult.setText("Location finder is not available at this time. Try moving to a location with internet service.");
+            }
+        } else {
+            manualInputBox.setVisibility(View.INVISIBLE);
+            manualInputBox.setHint("Set Start Location");
+            origin = currentLoc;
         }
+
     }
 
     // A place has been received; use requestCode to track the request.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (requestCode == 1) {
-
             if (resultCode == RESULT_OK) {
-
                 Place place = PlaceAutocomplete.getPlace(this, data);
-
-                Log.i(TAG, "Place: " + place.getAddress() + place.getPhoneNumber() + place.getLatLng().latitude);
-
-                userInput=String.valueOf(place.getLatLng().latitude);
-                userInput+=",";
-                userInput+=String.valueOf(place.getLatLng().longitude);
-                locs.add(userInput);
-
-                if (locs.size()==1) {
-                    etTo.setText("Starting location: " + String.valueOf(place.getName()));
-
-                } else if (locs.size()==2) {
-                    etTo.setText("Destination: " + String.valueOf(place.getName()));
-
-                } else {
-                    etTo.setText("Location confirmed: " + String.valueOf(place.getName()));
+                Log.e("Tag", "Place: " + place.getAddress() + place.getPhoneNumber() + place.getLatLng().latitude);
+                userInput = String.valueOf(place.getLatLng().latitude);
+                userInput += ",";
+                userInput += String.valueOf(place.getLatLng().longitude);
+                if (dest == "" && checkBox.isChecked() == false) {
+                    dest = userInput;
+                    textInputBox.setHint("Destination: " + place.getName());
+                    lat = place.getLatLng().latitude;
+                    longs = place.getLatLng().longitude;
+                    map.addMarker(new MarkerOptions()
+                            .position(new LatLng(lat, longs)));
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, longs), 16));
+                } else if (dest == "" && checkBox.isChecked() == true && origin != "") {
+                    dest = userInput;
+                    textInputBox.setHint("Destination: " + place.getName());
+                    lat = place.getLatLng().latitude;
+                    longs = place.getLatLng().longitude;
+                    map.addMarker(new MarkerOptions()
+                            .position(new LatLng(lat, longs)));
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, longs), 16));
+                } else if (checkBox.isChecked() == true) {
+                    origin = userInput;
+                    manualInputBox.setHint("Start: " + place.getName());
                 }
-
-                locs_names.add(String.valueOf(place.getName()));
-                lats.add(place.getLatLng().latitude);
-                longs.add(place.getLatLng().longitude);
-
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-
-                Log.i(TAG, "onActivityResult: result error");
-
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 tvResult.setText("No known location. Please try another location.");
-
             } else if (resultCode == RESULT_CANCELED) {
-                Log.i(TAG, "onActivityResult: result cancelled");
             }
+        }
+        switch (requestCode) {
+
+            case CONNECTION_FAILURE_RESOLUTION_REQUEST:
+            /*
+             * If the result code is Activity.RESULT_OK, try to connect again
+             */
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        mGoogleApiClient.connect();
+                        break;
+                }
+
         }
     }
 
@@ -147,25 +211,17 @@ public class GetDirections extends ActionBarActivity {
     public void getDirections(View v) {
 
         btn.setEnabled(false);
+        if (manualInputBox.isShown() == false) {
+            origin = currentLoc;
+        }
+        Log.e("Origin", "Place: " + origin + dest);
 
-        origin = locs.get(0); //first location
-        dest = locs.get(1); //second location
-        locs.clear(); //clear them in case user inputs second trip
         direction_array.clear(); //clear directions
-
-        trip_desc="Trip confirmed: ";
-        trip_desc+=locs_names.get(0);
-        trip_desc+=" to ";
-        trip_desc += locs_names.get(1);
-        etTo.setText(trip_desc);//display trip to user
-
-        locs_names.clear();
 
         String url = getDirectionsUrl(origin, dest);
 
         DownloadTask downloadTask = new DownloadTask(); //download info from Directions API
         downloadTask.execute(url);
-
     }
 
     //inputs are origin and destination
@@ -178,8 +234,9 @@ public class GetDirections extends ActionBarActivity {
         String parameters = str_origin + "&" + str_dest + "&mode=transit" + "&" + sensor;
         String output = "xml";
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
-
+        Log.e("URL", "Place: " + url);
         return url;
+
     }
 
     //Input is the URL string built in getDirectionsURL
@@ -208,7 +265,6 @@ public class GetDirections extends ActionBarActivity {
 
         } catch (Exception e) {
             Log.d("XML Error", e.toString());
-
         } finally {
             iStream.close();
             urlConnection.disconnect();
@@ -241,9 +297,9 @@ public class GetDirections extends ActionBarActivity {
 
                 pb.setVisibility(View.VISIBLE);
                 pb.setProgress(progress_status);
-                tvResult.setText("Finding best route... 0%");
             }
         }
+
         //returns XML data
         @Override
         protected String doInBackground(String... url) {
@@ -268,7 +324,6 @@ public class GetDirections extends ActionBarActivity {
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             pb.setProgress(values[0]);
-            tvResult.setText("Finding best route... " + values[0] + "%");
         }
 
         protected void onPostExecute(String result) {
@@ -296,17 +351,14 @@ public class GetDirections extends ActionBarActivity {
 
         String currentElement;
 
-        if (lats.get(1)< 40.711451) {
-            town_desc="Brooklyn-bound/Queens-bound ";
-        }
-        else if (lats.get(1) > 40.805942) {
-            town_desc="Uptown/Manhattan-bound/Bronx-bound ";
-        }
-        else if (longs.get(1) < -73.963081) {
-            town_desc="Uptown/Bronx-bound/Manhattan-bound ";
-        }
-        else {
-            town_desc="Downtown/Brooklyn-bound/Queens-bound ";
+        if (lat < 40.711451) {
+            town_desc = "Brooklyn-bound/Queens-bound ";
+        } else if (lat > 40.805942) {
+            town_desc = "Uptown/Manhattan-bound/Bronx-bound ";
+        } else if (longs < -73.963081) {
+            town_desc = "Uptown/Bronx-bound/Manhattan-bound ";
+        } else {
+            town_desc = "Downtown/Brooklyn-bound/Queens-bound ";
         }
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -316,7 +368,7 @@ public class GetDirections extends ActionBarActivity {
                 currentTag = parser.getName();
                 if (currentTag.equals("short_name")) {
                     currentElement = parser.nextText();
-                    train_short_name+=currentElement;
+                    train_short_name += currentElement;
                 }
                 if (currentTag.equals("headsign")) {
                     currentElement = parser.nextText();
@@ -352,40 +404,38 @@ public class GetDirections extends ActionBarActivity {
 
                 if (headsign_name != "") {
                     direction_array.remove(direction_array.size() - 1);
-                    array_append1="Station: ";
-                    array_append1+=town_desc;
-                    array_append1+=train_short_name;
-                    array_append3="Train: ";
-                    array_append3+=names.get(2);
-                    array_append3+=" ";
-                    array_append3+=train_short_name;
-                    array_append3+=" to ";
-                    array_append3+=headsign_name;
-                    array_append2="Trip: ";
-                    array_append2+=num_stops;
-                    array_append2+=" to ";
-                    array_append2+=names.get(1);
+                    array_append1 = "Station: ";
+                    array_append1 += town_desc;
+                    array_append1 += train_short_name;
+                    array_append3 = "Train: ";
+                    array_append3 += names.get(2);
+                    array_append3 += " ";
+                    array_append3 += train_short_name;
+                    array_append3 += " to ";
+                    array_append3 += headsign_name;
+                    array_append2 = "Trip: ";
+                    array_append2 += num_stops;
+                    array_append2 += " to ";
+                    array_append2 += names.get(1);
                     direction_array.add(array_append1);
                     direction_array.add(array_append3);
                     direction_array.add(array_append2);
                     train_short_name = "";
                     headsign_name = "";
-                    array_append1="";
-                    array_append2="";
+                    array_append1 = "";
+                    array_append2 = "";
                     num_stops = "";
                     names.clear();
-                }
-                else if (instructions_name !="") {
+                } else if (instructions_name != "") {
                     direction_array.add(instructions_name);
                     instructions_name = "";
                 }
 
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.END_TAG) {
                 currentTag = parser.getName();
 
                 if (currentTag.equals("DirectionsResponse")) {
-                    town_desc="";
+                    town_desc = "";
                     return direction_array;
                 }
             }
@@ -431,28 +481,21 @@ public class GetDirections extends ActionBarActivity {
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-
             super.onProgressUpdate(values);
             pb.setProgress(values[0]);
-            tvResult.setText("Finding best route... " + values[0] + "%");   //displays progress
         }
 
         protected void onPostExecute(ArrayList<String> result) {
-
             super.onPostExecute(result);
-            tvResult.setText("Route found!");
             btn.setEnabled(true);
 
             if (result != null) {
 
                 StringBuilder b = new StringBuilder(); //should be disabled for prod system; displays the string of directions
-                for (String s : result){
-                    b.append(s+"\n");
+                for (String s : result) {
+                    b.append(s + "\n");
                 }
-//                tvResult.setText(b);
-//                lats.clear();
-//                longs.clear();
-                Log.i(TAG, b.toString());
+                Log.e("Text", "Place: " + b);
             }
 
             // pass data to NavList
@@ -461,8 +504,160 @@ public class GetDirections extends ActionBarActivity {
             startActivity(i);
 
             pb.setVisibility(View.GONE);
-
         }
     }
+
+    protected void loadMap(GoogleMap googleMap) {
+        map = googleMap;
+        if (map != null) {
+            // Map is ready
+            //Toast.makeText(this, "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
+            //needs to be updated to the name of the activity
+            GetDirectionsPermissionsDispatcher.getMyLocationWithCheck(this);
+        } else {
+            Toast.makeText(this, "Could not load map.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //needs to be updated to the name of the activity
+        GetDirectionsPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    void getMyLocation() {
+        if (map != null) {
+            map.setMyLocationEnabled(true); //defaults to current location
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this).build();
+            connectClient();
+        }
+    }
+
+    protected void connectClient() {
+        if (isGooglePlayServicesAvailable() && mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        connectClient();
+    }
+
+    @Override
+    protected void onStop() {
+        // turns the services off
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+        super.onStop();
+    }
+
+    private boolean isGooglePlayServicesAvailable() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (ConnectionResult.SUCCESS == resultCode) {
+            Log.d("Location Updates", "Google Play services is available.");
+            return true;
+        } else {
+            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
+            if (errorDialog != null) {// uses automatic Google Play error
+                ErrorDialogFragment errorFragment = new ErrorDialogFragment();
+                errorFragment.setDialog(errorDialog);
+                errorFragment.show(getSupportFragmentManager(), "Location Updates");
+            }
+
+            return false;
+        }
+    }
+
+    //after location services connects
+    @Override
+    public void onConnected(Bundle dataBundle) {
+        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (location != null) {
+            currentLoc = Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude());
+            Toast.makeText(this, "Location found!", Toast.LENGTH_SHORT).show();
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+            map.animateCamera(cameraUpdate);
+        } else {
+            Toast.makeText(this, "Location unknown. Enable GPS updates to use Getting There.", Toast.LENGTH_SHORT).show();
+        }
+        startLocationUpdates();
+    }
+
+    //starts location services
+    protected void startLocationUpdates() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                mLocationRequest, this);
+    }
+
+    public void onLocationChanged(Location location) {
+        String msg = "Updated Location: " +
+                Double.toString(location.getLatitude()) + "," +
+                Double.toString(location.getLongitude());
+        currentLoc = Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude());
+
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+
+    }
+
+    //if location services stop
+    @Override
+    public void onConnectionSuspended(int i) {
+        if (i == CAUSE_SERVICE_DISCONNECTED) {
+            Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+        } else if (i == CAUSE_NETWORK_LOST) {
+            Toast.makeText(this, "Network lost. Please re-connect.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //uses a Google service to resolve the error
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        if (connectionResult.hasResolution()) {
+            try {
+                connectionResult.startResolutionForResult(this,//try to fix the problem
+                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
+            } catch (IntentSender.SendIntentException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(getApplicationContext(),
+                    "Error--location services are not available.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // Errors
+    public static class ErrorDialogFragment extends DialogFragment {
+        private Dialog mDialog;
+
+        public ErrorDialogFragment() {
+            super();
+            mDialog = null;
+        }
+
+        public void setDialog(Dialog dialog) {
+            mDialog = dialog;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            return mDialog;
+        }
+    }
+
+
 
 }

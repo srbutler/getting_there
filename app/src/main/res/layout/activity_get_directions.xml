@@ -1,30 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_height="wrap_content"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="cuny.gc.multimodality.gettingthere.GetDirections">
-
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/skylineImageViewGetDirections"
-        android:foreground="@mipmap/nyc_skyline"
-        android:focusableInTouchMode="true"
-        android:focusable="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:contentDescription="@string/start_skyline_desc"
-        android:padding="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_alignParentStart="true" />
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".GetDirections">
 
     <ProgressBar
         android:layout_width="match_parent"
@@ -32,44 +15,57 @@
         android:id="@+id/progressBar"
         android:visibility="invisible"
         android:layout_below="@+id/button"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:textAlignment="center" />
 
-    <Button
-        android:id="@+id/findOrigin"
+    <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start"
+        android:text="Manually set starting location"
         android:onClick="findOrigin"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="200dp"
-        android:textSize="20sp"
-        android:background="#000000"
-        android:elegantTextHeight="false"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:layout_centerHorizontal="true"
-        android:textColor="#bababa" />
-    <Button
-        android:id="@+id/findPlace"
+        android:checked="false"
+        android:id="@+id/checkBox"
+        android:textSize="20sp" />
+
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/destination"
-        android:onClick="findPlace"
-        android:layout_below="@+id/findOrigin"
-        android:textSize="20sp"
-        android:background="#000000"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
+        android:id="@+id/findOrigin"
+        android:hint="Set Start Location"
+        android:layout_below="@+id/checkBox"
         android:layout_centerHorizontal="true"
+        android:onClick="findOrigin"
+        android:visibility="invisible"
+        android:editable="false"
+        android:focusable="false"
+        android:textAlignment="center"
+        android:textIsSelectable="false"
+        android:textColor="#ffffff"
+        android:inputType="text"
         android:layout_marginTop="50dp"
-        android:textColor="#bababa" />
+        android:textSize="25sp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textInput"
+        android:hint="Set Destination"
+        android:editable="false"
+        android:focusable="false"
+        android:layout_below="@+id/findOrigin"
+        android:layout_centerHorizontal="true"
+        android:onClick="findPlace"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textColor="#ffffff"
+        android:inputType="text"
+        android:layout_marginTop="0dp"
+        android:textSize="25sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tvTo"
-        android:layout_below="@+id/findPlace"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:textAlignment="center"
@@ -79,11 +75,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etTo"
-        android:layout_below="@+id/findPlace"
         android:layout_alignEnd="@+id/linearLayout"
-        android:textSize="25sp"
-        android:layout_marginTop="50dp"
-        android:gravity="center" />
+        android:textSize="25px"
+        android:layout_marginTop="50dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -93,9 +87,9 @@
         android:layout_below="@+id/etTo"
         android:layout_centerHorizontal="true"
         android:onClick="getDirections"
-        android:layout_marginTop="75dp"
-        android:textSize="30sp"
-        android:background="#0d2a07"
+        android:layout_marginTop="150dp"
+        android:textSize="20sp"
+        android:background="#157b00"
         android:textColor="#bababa"
         android:paddingEnd="30dp"
         android:paddingStart="30dp"
@@ -116,8 +110,15 @@
             android:id="@+id/tvResult"
             android:layout_alignTop="@+id/scrollView"
             android:layout_alignParentStart="true" />
-
     </ScrollView>
+
+    <fragment
+        android:id="@+id/map"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/scrollView"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -125,24 +126,6 @@
         android:layout_height="match_parent"
         android:weightSum="1"
         android:id="@+id/linearLayout">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Plan Your Route"
-            android:id="@+id/getDirectionsTitle"
-            android:layout_gravity="center_horizontal"
-            android:textSize="40sp" />
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/get_directions_instructions"
-            android:id="@+id/textView"
-            android:layout_margin="5dp" />
     </LinearLayout>
 
 </RelativeLayout>
-
