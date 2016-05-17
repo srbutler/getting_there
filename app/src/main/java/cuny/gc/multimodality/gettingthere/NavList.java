@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
@@ -15,12 +16,8 @@ import java.util.ArrayList;
 
 public class NavList extends AppCompatActivity {
 
+    private static final String TAG = "NavList.java";
     ListView directionsListView;
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +26,16 @@ public class NavList extends AppCompatActivity {
 
         // http://stackoverflow.com/questions/21250339/how-to-pass-arraylistcustomeobject-from-one-activity-to-another
         // get the ArrayList<String> via intent and convert to String[]
-        ArrayList<String> directionsArrayList = (ArrayList<String>) getIntent().getSerializableExtra("directionsArrayList");
-        String[] directionsArray = (String[]) directionsArrayList.toArray();
+
+        ArrayList<String> directionsArrayList = getIntent().getStringArrayListExtra("directionsArrayList");
+
+        String[] directionsArray = new String[directionsArrayList.size()];
+        directionsArray = directionsArrayList.toArray(directionsArray);
+
+        Log.i(TAG, "ArrayList: " + directionsArrayList.toString());
+        Log.i(TAG, "String[]: " + directionsArrayList.toString());
+
+//        String[] directionsArray = (String[]) directionsArrayList.toArray();
 
         // TODO: customize R.layout.row_directions and DirectionsAdapter.java to set this correctly
         ListAdapter directionsListAdapter = new DirectionsAdapter(this, directionsArray);
@@ -48,14 +53,14 @@ public class NavList extends AppCompatActivity {
                         // whenever you tap an item in a list, it's position, id, etc. get
                         // passed along and saved in a var
 
-//                        String itemPosition = String.valueOf(parent.getItemIdAtPosition(position));
-//                        String selectedItemText = ((TextView) view.findViewById(R.id.SOMETHINGHERE)).getText().toString();
+                        // String itemPosition = String.valueOf(parent.getItemIdAtPosition(position));
+                        // String selectedItemText = ((TextView) view.findViewById(R.id.SOMETHINGHERE)).getText().toString();
 
                         final CharSequence popupMenuOptions[] = new CharSequence[]
                                 {"Confirm Step Completion", "See Map", "Type Sign Text", "OCR Sign Text"};
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(NavList.this);
-                        builder.setTitle("Pick a color");
+                        builder.setTitle("Choose an Option");
                         builder.setItems(popupMenuOptions, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

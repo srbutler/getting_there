@@ -17,7 +17,7 @@ public class HomeScreen extends Activity {
     public void onClick(View v){
 
         if (v.getId() == R.id.start_button_nav) {
-            Intent i = new Intent(this, NavMenu.class);
+            Intent i = new Intent(this, GetDirections.class);
             startActivity(i);
 
         } else if (v.getId() == R.id.start_button_maps) {

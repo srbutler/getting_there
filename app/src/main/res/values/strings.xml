@@ -22,4 +22,21 @@
     <string name="sign_text">Prospect Av Station\nBay Ridge\nR</string>
     <string name="clear_text">Clear Text</string>
     <string name="check_text">Check Text</string>
+
+    <string name="google_app_id">responsive-hall-130823</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve"></string>
+    <string name="action_settings">Settings</string>
+    <string name="source">Where are you coming from?</string>
+    <string name="destination">End</string>
+    <string name="directions">GET THERE!</string>
+
+    <string name="get_directions_instructions">Choose your starting point and end destination by
+    clicking the buttons below and entering an address into each prompt. Once the route has been found,
+    click GET THERE to be on the way to your destination.</string>
+    <string name="maps_explanation">Maps are clickable! When viewing a map from the Maps menu or
+        during navigation, the small orange icons are buttons representing signs. Click one to see
+        that sign\'s text.</string>
+    <string name="nav_instructions">Enter a Start and End location in the Maps Menu. After you click
+    "GET THERE", look through the navigation steps. If you need help you can click a step to check a station
+    map, verify with text entry, or verify by taking a photo of a sign.</string>
 </resources>

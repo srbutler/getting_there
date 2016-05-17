@@ -11,10 +11,28 @@
 
     <ImageView
         android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/skylineImageViewOCR"
+        android:foreground="@mipmap/nyc_skyline"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="false"
+        android:contentDescription="@string/start_skyline_desc"
+        android:padding="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="fill_parent"
         android:layout_height="300dp"
         android:id="@+id/ocrResultImageView"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:background="@android:drawable/screen_background_dark_transparent" />
 
     <TextView
         android:layout_width="match_parent"
@@ -25,7 +43,7 @@
         android:layout_above="@+id/takePhotoButton"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="0dp"
-        android:autoText="false" />
+        android:background="@android:drawable/screen_background_light_transparent" />
 
     <Button
         android:layout_width="fill_parent"
@@ -35,7 +53,7 @@
         android:layout_above="@+id/acceptButton"
         android:layout_centerHorizontal="true"
         android:textSize="28sp"
-        android:onClick="launchCamera" />
+        android:onClick="insertItems" />
 
     <Button
         android:layout_width="175dp"

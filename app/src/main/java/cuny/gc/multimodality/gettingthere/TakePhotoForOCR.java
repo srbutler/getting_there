@@ -182,6 +182,13 @@ public class TakePhotoForOCR extends AppCompatActivity {
         }
     }
 
+    public void insertItems(View v) {
+
+        ocrResultImageView.setImageResource(R.drawable.mh_entrance_25_st);
+        ocrResultTextView.setText("25 Street Station\nManhattan & Queens\nR");
+
+    }
+
 //    private void doOCR() {
 //
 //        Log.v(TAG, "doOCR");

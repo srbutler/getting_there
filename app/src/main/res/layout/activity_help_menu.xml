@@ -9,14 +9,106 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="cuny.gc.multimodality.gettingthere.HelpMenu">
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/skylineImageViewHelp"
+        android:foreground="@mipmap/nyc_skyline"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@string/start_skyline_desc"
+        android:padding="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Maps:"
+        android:id="@+id/mapsHeader"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutMaps"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/mapsHeader">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/image_button_example"
+            android:src="@drawable/s_button_sq"
+            android:onClick="onClick"
+            android:layout_marginTop="30dp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/maps_explanation"
+            android:id="@+id/maps_instructions"
+            android:layout_marginLeft="20dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Help with Getting There"
+        android:id="@+id/textView2"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="30sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Navigation:"
+        android:id="@+id/navigationHeader"
+        android:layout_below="@+id/linearLayoutMaps"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/nav_instructions"
+        android:id="@+id/nav_instructions"
+        android:layout_below="@+id/navigationHeader"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/help_button_back"
         android:id="@+id/help_button_back"
-        android:longClickable="true"
+        android:onClick="onClick"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="onClick" />
+        android:layout_alignStart="@+id/textView2"
+        android:layout_marginBottom="79dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to Site"
+        android:id="@+id/help_button_link"
+        android:onClick="goToSite"
+        android:layout_alignBaseline="@+id/help_button_back"
+        android:layout_alignBottom="@+id/help_button_back"
+        android:layout_alignEnd="@+id/textView2" />
 
 </RelativeLayout>

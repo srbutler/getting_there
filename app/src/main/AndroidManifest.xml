@@ -2,8 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cuny.gc.multimodality.gettingthere">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -30,7 +34,13 @@
         <activity android:name=".NavCheck" />
         <activity android:name=".OCRActivity" />
         <activity android:name=".TextEntryCheck" />
-        <activity android:name=".NavList"></activity>
+        <activity android:name=".NavList" />
+        <activity android:name=".GetDirections" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDVxaVn7n2W_w2q5tBmec1RL1D0T2IoXrU"/>
+
     </application>
 
 </manifest>
